@@ -49,6 +49,9 @@ namespace AngularProject.Controllers
             List<PostDto> postDtosResult = new List<PostDto>();
             if (posts.Count > 0)
             {
+                // Remove duplicated
+                posts = posts.GroupBy(x => x.Id).Select(x => x.First()).ToList();
+
                 // Sort as request
                 posts = SortHelper.sortPost(posts, sortBy, direction);
 
