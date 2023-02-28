@@ -6,6 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Metadata;
+using AngularProject.Models;
+using Microsoft.Extensions.Configuration;
 
 namespace AngularProject.Controllers
 {
@@ -13,11 +15,16 @@ namespace AngularProject.Controllers
     [ApiController]
     public class PostController : ControllerBase
     {
-        public PostController() { }
+        private readonly IConfiguration _configuration;
+        public PostController(IConfiguration configuration) 
+        {
+            _configuration = configuration;
+        }
 
         [HttpGet("searchData")]
         public IActionResult Get(string tags, string sortBy, string direction)
         { 
+            // Validation
             List<string> searchTags = InputValidationHelpers.processTagsValue(tags);
             if (searchTags == null) return BadRequest(InputValidationHelpers.tagsRequired);
 
@@ -27,19 +34,42 @@ namespace AngularProject.Controllers
             direction = InputValidationHelpers.processDirectionValue(direction);
             if(direction ==null) return BadRequest(InputValidationHelpers.directionInvalid);
          
-            List<PostDto> posts = new List<PostDto>();
+            // Call Api
+            List<Post> posts = new List<Post>();
+            string apiPath = _configuration.GetValue<string>("PostApi");
             for (int i = 0; i < searchTags.Count; i++)
             {
-                var response = APIHelper.GetDataFromAPI(searchTags[i]);
+                var response = APIHelper.GetDataFromAPI(apiPath, searchTags[i]);
                 if(response != null)
                 {
                     posts.AddRange(response.ToList());
                 }
             }
 
-            posts = SortHelper.sortPost(posts, sortBy, direction);
+            List<PostDto> postDtosResult = new List<PostDto>();
+            if (posts.Count > 0)
+            {
+                // Sort as request
+                posts = SortHelper.sortPost(posts, sortBy, direction);
 
-            return Ok(posts);
+                // Convert Post to PostDto before turned
+                foreach (var post in posts)
+                {
+                    var postDto = new PostDto()
+                    {
+                        Id = post.Id,
+                        Author = post.Author,
+                        AuthorId = post.AuthorId,
+                        Likes = post.Likes,
+                        Popularity = post.Popularity,
+                        Reads = post.Reads,
+                        Tags = post.Tags,
+                    };
+                    postDtosResult.Add(postDto);
+                }
+            }
+
+            return Ok(postDtosResult);
         }
     }
 }
