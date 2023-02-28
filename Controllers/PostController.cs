@@ -21,7 +21,7 @@ namespace AngularProject.Controllers
             _configuration = configuration;
         }
 
-        [HttpGet("searchData")]
+        [HttpGet("search")]
         public IActionResult Get(string tags, string sortBy, string direction)
         { 
             // Validation
@@ -59,7 +59,6 @@ namespace AngularProject.Controllers
                     {
                         Id = post.Id,
                         Author = post.Author,
-                        AuthorId = post.AuthorId,
                         Likes = post.Likes,
                         Popularity = post.Popularity,
                         Reads = post.Reads,

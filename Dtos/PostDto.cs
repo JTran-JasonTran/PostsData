@@ -5,7 +5,6 @@ namespace AngularProject.Dtos
     public class PostDto
     {
         public string Author { get; set; }
-        public int AuthorId { get; set; }
         public int Id { get; set; }
         public int Likes { get; set; }
         public double Popularity { get; set; }

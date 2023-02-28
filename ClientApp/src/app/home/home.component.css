@@ -1,0 +1,31 @@
+.required {
+  color: red;
+}
+
+h1 {
+  font-size: 25px;
+  font-weight: 700;
+}
+
+label{
+  font-weight: 700 !important;
+}
+
+.criteriaWrapper{
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 25px;
+}
+
+.criteriaItem{
+  width: 300px;
+}
+
+select {
+  width: 180px;
+  height: 28px ;
+}
+
+button {
+  font-weight: 700 !important;
+}
