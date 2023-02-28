@@ -41,7 +41,8 @@
   <br/>
 
   <div>
-  <p *ngIf="!post"><em>Loading...</em></p>
+  <p class="loading" *ngIf="isLoading"><em>Loading...</em></p>
+  <p class="error" *ngIf="isError"><em>Error...</em></p>
 
   <table class='table table-striped' aria-labelledby="tableLabel" *ngIf="posts">
     <thead>

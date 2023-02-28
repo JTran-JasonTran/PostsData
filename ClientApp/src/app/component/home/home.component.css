@@ -29,3 +29,11 @@ select {
 button {
   font-weight: 700 !important;
 }
+
+.loading{
+  color: #007c86;
+}
+
+.error{
+  color: red;
+}

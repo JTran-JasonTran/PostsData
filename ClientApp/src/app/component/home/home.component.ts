@@ -1,10 +1,10 @@
-import { Component, Inject, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { Validators } from '@angular/forms';
 
-import {sortByList, directionList} from "../_data/data.js"
-
+import {sortByList, directionList} from "../../_data/data.js"
+import { PostService } from '../../services/post.service.js';
+import { Post } from '../../models/model.js';
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -16,8 +16,10 @@ export class HomeComponent implements OnInit {
   sortByList = sortByList;
   directionList = directionList;
   searchForm:FormGroup;
+  isLoading = false;
+  isError = false;
 
-  constructor(private http: HttpClient, @Inject('BASE_URL') private baseUrl: string) {
+  constructor(private postService: PostService) {
   }
 
   ngOnInit() : void{
@@ -29,29 +31,22 @@ export class HomeComponent implements OnInit {
   }
 
   onSubmit() {
-    let url =  this.getSubmitBaseUrl();
-    this.http.get<Post[]>(url).subscribe(result => {
-      this.posts = result;
-      console.log(result);
-    }, error => console.error(error));
-  }
-
-  private getSubmitBaseUrl(): string {
     let searchTags = this.searchForm.value.tags;
     let sortBy = this.searchForm.value.sortBy;
     let direction = this.searchForm.value.direction;
+    this.isLoading = true;
+    this.isError = false;
 
-    return this.baseUrl + `api/Post/search?tags=${searchTags}&&sortBy=${sortBy}&&direction=${direction}`;
+    this.postService.getPostsBySearchCriteria(searchTags, sortBy, direction).subscribe(
+      (data: Post[]) => {
+        this.posts = data;
+      }, err => {
+        this.isLoading = false;
+        this.isError = true;
+      }, () => {
+        this.isLoading = false;
+        this.isError = false;
+      }
+    )
   }
 }
-
-interface Post {
-  author: string;
-  authorId: number;
-  id: number;
-  likes: number;
-  popularity: number;
-  reads: number;
-  tags: Array<string>;
-}
-

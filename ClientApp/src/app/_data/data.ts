@@ -1,7 +1,4 @@
-interface selectOption {
-  value: string;
-  displayValue: string;
-}
+import { selectOption } from "../models/model";
 
 export const sortByList:Array<selectOption> = [
   {value: "id", displayValue: "Id" },
