@@ -12,7 +12,7 @@ namespace AngularProject.Helpers
         {
             using (var client = new HttpClient())
             {
-                string apiEndpoint = apiPath + searchKey;
+                string apiEndpoint = apiPath + searchKey.Trim();
                 try
                 {
                     var apiResponse = client.GetAsync(apiEndpoint).Result;
